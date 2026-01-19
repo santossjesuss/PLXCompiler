@@ -1,13 +1,12 @@
 package org.uma.ast.condition;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class LogicalExpr implements ASTNode {
+public class LogicalExpr implements Condition {
     private String operator;
-    private ASTNode left, right;
+    private Condition left, right;
 
-    LogicalExpr(String operator, ASTNode left, ASTNode right) {
+    LogicalExpr(String operator, Condition left, Condition right) {
         this.operator = operator;
         this.left = left;
         this.right = right;
@@ -17,11 +16,11 @@ public class LogicalExpr implements ASTNode {
         return operator;
     }
 
-    public ASTNode getLeft() {
+    public Condition getLeft() {
         return left;
     }
 
-    public ASTNode getRight() {
+    public Condition getRight() {
         return right;
     }
 

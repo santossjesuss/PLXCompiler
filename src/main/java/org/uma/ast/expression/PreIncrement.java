@@ -1,9 +1,8 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class PreIncrement implements ASTNode {
+public class PreIncrement implements Expression {
     private Identifier identifier;
 
     PreIncrement(Identifier identifier) {

@@ -42,7 +42,7 @@ public class SemanticAnalyzer implements ASTVisitor<Void> {
 
     @Override
     public Void visit(UnaryExpr node) {
-        node.getOperand().accept(this);
+        node.getExpression().accept(this);
         return null;
     }
 

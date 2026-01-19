@@ -1,22 +1,21 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class Assignment implements ASTNode {
-    private String identifier;
-    private ASTNode value;
+public class Assignment implements Expression {
+    private Identifier identifier;
+    private Expression value;
 
-    Assignment(String ident, ASTNode value) {
+    Assignment(Identifier ident, Expression value) {
         identifier = ident;
         this.value = value;
     }
 
-    public String getIdentifier() {
+    public Identifier getIdentifier() {
         return identifier;
     }
 
-    public ASTNode getValue() {
+    public Expression getValue() {
         return value;
     }
 

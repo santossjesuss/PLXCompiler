@@ -1,9 +1,8 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class PostDecrement implements ASTNode {
+public class PostDecrement implements Expression {
     private Identifier identifier;
 
     PostDecrement(Identifier identifier) {

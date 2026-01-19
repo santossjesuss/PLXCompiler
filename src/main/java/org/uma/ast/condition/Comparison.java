@@ -1,13 +1,12 @@
 package org.uma.ast.condition;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class Comparison implements ASTNode {
+public class Comparison implements Condition {
     private String operator;
-    private ASTNode left, right;
+    private Condition left, right;
 
-    Comparison(String operator, ASTNode left, ASTNode right) {
+    Comparison(String operator, Condition left, Condition right) {
         this.operator = operator;
         this.left = left;
         this.right = right;
@@ -17,11 +16,11 @@ public class Comparison implements ASTNode {
         return operator;
     }
 
-    public ASTNode getLeft() {
+    public Condition getLeft() {
         return left;
     }
 
-    public ASTNode getRight() {
+    public Condition getRight() {
         return right;
     }
 

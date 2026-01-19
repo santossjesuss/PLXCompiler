@@ -1,9 +1,8 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class PreDecrement implements ASTNode {
+public class PreDecrement implements Expression {
     private Identifier identifier;
 
     PreDecrement(Identifier identifier) {

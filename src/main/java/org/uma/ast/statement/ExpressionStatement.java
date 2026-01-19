@@ -1,18 +1,13 @@
-package org.uma.ast.expression;
+package org.uma.ast.statement;
 
 import org.uma.ASTVisitor;
+import org.uma.ast.expression.Expression;
 
-public class UnaryExpr implements Expression {
-    private String operator;
+public class ExpressionStatement implements Statement {
     private Expression expression;
 
-    UnaryExpr(String operator, Expression expression) {
-        this.operator = operator;
+    public ExpressionStatement(Expression expression) {
         this.expression = expression;
-    }
-
-    public String getOperator() {
-        return operator;
     }
 
     public Expression getExpression() {

@@ -54,7 +54,7 @@ public class CodeGenerator implements ASTVisitor<String> {
 
     @Override
     public String visit(UnaryExpr node) {
-        String operand = node.getOperand().accept(this);
+        String operand = node.getExpression().accept(this);
         String temp = newTemp();
 
         if (node.getOperator().equals("-")) {

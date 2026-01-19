@@ -2,21 +2,22 @@ package org.uma.ast.statement;
 
 import org.uma.ASTVisitor;
 import org.uma.ast.ASTNode;
+import org.uma.ast.condition.Condition;
 
-public class WhileStatement implements ASTNode {
-    private ASTNode condition;
-    private ASTNode body;
+public class WhileStatement implements Statement {
+    private Condition condition;
+    private Statement body;
 
-    WhileStatement(ASTNode condition, ASTNode body) {
+    WhileStatement(Condition condition, Statement body) {
         this.condition = condition;
         this.body = body;
     }
 
-    public ASTNode getCondition() {
+    public Condition getCondition() {
         return condition;
     }
 
-    public ASTNode getBody() {
+    public Statement getBody() {
         return body;
     }
 

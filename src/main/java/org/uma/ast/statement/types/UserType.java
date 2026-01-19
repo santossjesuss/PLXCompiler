@@ -1,11 +1,17 @@
-package org.uma.ast.statement;
+package org.uma.ast.statement.types;
 
 import org.uma.ASTVisitor;
 
-public class IntType extends Type {
+public class UserType extends Type {
+    private String name;
+
+    UserType(String name) {
+        this.name = name;
+    }
+
     @Override
     public String getType() {
-        return "int";
+        return name;
     }
 
     @Override

@@ -1,9 +1,9 @@
 package org.uma.ast.statement;
 
-import org.uma.ASTVisitor;
 import org.uma.ast.expression.Expression;
+import org.uma.ast.statement.types.Type;
 
-public class VariableDeclaration implements Statement {
+public class VariableDeclaration {
     private Type type;
     private String id;
     private Expression expression;
@@ -24,10 +24,5 @@ public class VariableDeclaration implements Statement {
 
     public Expression getExpression() {
         return expression;
-    }
-
-    @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return null;
     }
 }

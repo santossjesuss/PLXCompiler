@@ -1,22 +1,22 @@
 package org.uma.ast.statement;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
+import org.uma.ast.condition.Condition;
 
-public class DoWhileStatement implements ASTNode {
-    private ASTNode body;
-    private ASTNode condition;
+public class DoWhileStatement implements Statement {
+    private Statement body;
+    private Condition condition;
 
-    DoWhileStatement(ASTNode body, ASTNode condition) {
+    DoWhileStatement(Statement body, Condition condition) {
         this.body = body;
         this.condition = condition;
     }
 
-    public ASTNode getBody() {
+    public Statement getBody() {
         return body;
     }
 
-    public ASTNode getCondition() {
+    public Condition getCondition() {
         return condition;
     }
 

@@ -1,9 +1,8 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class Identifier implements ASTNode {
+public class Identifier implements Expression {
     private String name;
 
     Identifier(String name) {

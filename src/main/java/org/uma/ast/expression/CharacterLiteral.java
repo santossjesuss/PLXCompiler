@@ -1,9 +1,8 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class CharacterLiteral implements ASTNode {
+public class CharacterLiteral implements Expression {
     private char value;
 
     CharacterLiteral(char value) {

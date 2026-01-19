@@ -2,21 +2,23 @@ package org.uma.ast.statement;
 
 import org.uma.ASTVisitor;
 import org.uma.ast.ASTNode;
+import org.uma.ast.condition.Condition;
+import org.uma.ast.expression.Expression;
 
-public class ForStatement implements ASTNode {
-    private ASTNode init;
-    private ASTNode condition;
-    private ASTNode update;
-    private ASTNode body;
+public class ForStatement implements Statement {
+    private ForInit init;
+    private Condition condition;
+    private Expression update;
+    private Statement body;
 
-    ForStatement(ASTNode init, ASTNode condition, ASTNode update, ASTNode body) {
+    ForStatement(ForInit init, Condition condition, Expression update, Statement body) {
         this.init = init;
         this.condition = condition;
         this.update = update;
         this.body = body;
     }
 
-    public ASTNode getInit() {
+    public ForInit getInit() {
         return init;
     }
 

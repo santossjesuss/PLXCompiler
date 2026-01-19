@@ -1,18 +1,18 @@
-package org.uma.ast.statement;
+package org.uma.ast;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
+import org.uma.ast.statement.Statement;
 
 import java.util.List;
 
-public class StatementList implements ASTNode {
-    private List<ASTNode> statements;
+public class Block implements ASTNode {
+    private List<Statement> statements;
 
-    StatementList(List<ASTNode> statements) {
+    public Block(List<Statement> statements) {
         this.statements = statements;
     }
 
-    public List<ASTNode> getStatements() {
+    public List<Statement> getStatements() {
         return statements;
     }
 

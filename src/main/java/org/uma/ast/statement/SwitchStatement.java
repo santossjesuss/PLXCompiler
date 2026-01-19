@@ -2,21 +2,22 @@ package org.uma.ast.statement;
 
 import org.uma.ASTVisitor;
 import org.uma.ast.ASTNode;
+import org.uma.ast.expression.Expression;
 
 import java.util.List;
 
-public class SwitchStatement implements ASTNode {
-    private ASTNode expression;
+public class SwitchStatement implements Statement {
+    private Expression expression;
     private List<SwitchCase> caseList;
-    private ASTNode optionalDefault;
+    private Statement optionalDefault;
 
-    public SwitchStatement(ASTNode expression, List<SwitchCase> caseList, ASTNode optionalDefault) {
+    public SwitchStatement(Expression expression, List<SwitchCase> caseList, Statement optionalDefault) {
         this.expression = expression;
         this.caseList = caseList;
         this.optionalDefault = optionalDefault;
     }
 
-    public ASTNode getExpression() {
+    public Expression getExpression() {
         return expression;
     }
 
@@ -24,7 +25,7 @@ public class SwitchStatement implements ASTNode {
         return caseList;
     }
 
-    public ASTNode getOptionalDefault() {
+    public Statement getOptionalDefault() {
         return optionalDefault;
     }
 

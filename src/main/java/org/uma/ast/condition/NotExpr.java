@@ -3,15 +3,15 @@ package org.uma.ast.condition;
 import org.uma.ASTVisitor;
 import org.uma.ast.ASTNode;
 
-public class NotExpr implements ASTNode {
-    private ASTNode operand;
+public class NotExpr implements Condition {
+    private Condition condition;
 
-    NotExpr(ASTNode operand) {
-        this.operand = operand;
+    NotExpr(Condition condition) {
+        this.condition = condition;
     }
 
-    public ASTNode getOperand() {
-        return operand;
+    public ASTNode getCondition() {
+        return condition;
     }
 
     @Override

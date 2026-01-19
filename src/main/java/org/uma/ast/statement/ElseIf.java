@@ -1,22 +1,21 @@
 package org.uma.ast.statement;
 
-import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
+import org.uma.ast.condition.Condition;
 
 public class ElseIf {
-    private ASTNode condition;
-    private ASTNode sentence;
+    private Condition condition;
+    private Statement sentence;
 
-    ElseIf(ASTNode condition, ASTNode sentence) {
+    ElseIf(Condition condition, Statement sentence) {
         this.condition = condition;
         this.sentence = sentence;
     }
 
-    public ASTNode getCondition() {
+    public Condition getCondition() {
         return condition;
     }
 
-    public ASTNode getSentence() {
+    public Statement getSentence() {
         return sentence;
     }
 }

@@ -1,9 +1,8 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class IntegerLiteral implements ASTNode {
+public class IntegerLiteral implements Expression {
     private int value;
 
     IntegerLiteral(int value) {

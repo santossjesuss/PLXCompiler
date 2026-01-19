@@ -1,8 +1,8 @@
-package org.uma.ast.statement;
+package org.uma.ast.statement.types;
 
 import org.uma.ASTVisitor;
 
-public class CharType extends Type{
+public class CharType extends Type {
     @Override
     public String getType() {
         return "char";

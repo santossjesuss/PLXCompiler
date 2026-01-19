@@ -1,13 +1,12 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class BinaryExpr implements ASTNode {
+public class BinaryExpr implements Expression {
     private String operator;
-    private ASTNode left, right;
+    private Expression left, right;
 
-    BinaryExpr(String op, ASTNode left, ASTNode right) {
+    BinaryExpr(String op, Expression left, Expression right) {
         operator = op;
         this.left = left;
         this.right = right;
@@ -17,11 +16,11 @@ public class BinaryExpr implements ASTNode {
         return operator;
     }
 
-    public ASTNode getLeft() {
+    public Expression getLeft() {
         return left;
     }
 
-    public ASTNode getRight() {
+    public Expression getRight() {
         return right;
     }
 

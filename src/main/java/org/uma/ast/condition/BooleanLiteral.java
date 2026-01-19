@@ -1,9 +1,8 @@
 package org.uma.ast.condition;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 
-public class BooleanLiteral implements ASTNode {
+public class BooleanLiteral implements Condition {
     private boolean value;
 
     BooleanLiteral(boolean value) {

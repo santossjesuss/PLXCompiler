@@ -1,27 +1,27 @@
 package org.uma.ast.expression;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
+import org.uma.ast.condition.Condition;
 
-public class TernaryExpr implements ASTNode {
-    private ASTNode condition;
-    private ASTNode trueBranch, falseBranch;
+public class TernaryExpr implements Expression {
+    private Condition condition;
+    private Expression trueBranch, falseBranch;
 
-    TernaryExpr(ASTNode condition, ASTNode trueBranch, ASTNode falseBranch) {
+    TernaryExpr(Condition condition, Expression trueBranch, Expression falseBranch) {
         this.condition = condition;
         this.trueBranch = trueBranch;
         this.falseBranch = falseBranch;
     }
 
-    public ASTNode getCondition() {
+    public Condition getCondition() {
         return condition;
     }
 
-    public ASTNode getTrueBranch() {
+    public Expression getTrueBranch() {
         return trueBranch;
     }
 
-    public ASTNode getFalseBranch() {
+    public Expression getFalseBranch() {
         return falseBranch;
     }
 

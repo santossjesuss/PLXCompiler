@@ -2,27 +2,28 @@ package org.uma.ast.statement;
 
 import org.uma.ASTVisitor;
 import org.uma.ast.ASTNode;
+import org.uma.ast.condition.Condition;
 
 import java.util.List;
 
-public class IfStatement implements ASTNode {
-    private ASTNode condition;
-    private ASTNode thenBranch;
+public class IfStatement implements Statement {
+    private Condition condition;
+    private Statement thenBranch;
     private List<ElseIf> elseIfList;
-    private ASTNode elseBranch;
+    private Statement elseBranch;
 
-    IfStatement(ASTNode condition, ASTNode thenBranch, List<ElseIf> elseIfList, ASTNode elseBranch) {
+    IfStatement(Condition condition, Statement thenBranch, List<ElseIf> elseIfList, Statement elseBranch) {
         this.condition = condition;
         this.thenBranch = thenBranch;
         this.elseIfList = elseIfList;
         this.elseBranch = elseBranch;
     }
 
-    public ASTNode getCondition() {
+    public Condition getCondition() {
         return condition;
     }
 
-    public ASTNode getThenBranch() {
+    public Statement getThenBranch() {
         return thenBranch;
     }
 
@@ -30,7 +31,7 @@ public class IfStatement implements ASTNode {
         return elseIfList;
     }
 
-    public ASTNode getElseBranch() {
+    public Statement getElseBranch() {
         return elseBranch;
     }
 

@@ -1,16 +1,16 @@
 package org.uma.ast.statement;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
+import org.uma.ast.expression.Expression;
 
-public class PrintStatement implements ASTNode {
-    private ASTNode expr;
+public class PrintStatement implements Statement {
+    private Expression expr;
 
-    PrintStatement(ASTNode expr) {
+    PrintStatement(Expression expr) {
         this.expr = expr;
     }
 
-    public ASTNode getExpr() {
+    public Expression getExpr() {
         return expr;
     }
 

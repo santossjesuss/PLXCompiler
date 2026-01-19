@@ -1,12 +1,10 @@
 package org.uma.ast.statement;
 
-import org.uma.ast.ASTNode;
-
-public class SwitchCase {
+public class SwitchCase  {
     private int value;
-    private ASTNode body;
+    private Statement body;
 
-    SwitchCase(int value, ASTNode body) {
+    SwitchCase(int value, Statement body) {
         this.value = value;
         this.body = body;
     }
@@ -15,7 +13,7 @@ public class SwitchCase {
         return value;
     }
 
-    public ASTNode getBody() {
+    public Statement getBody() {
         return body;
     }
 }
