@@ -1,0 +1,247 @@
+import java_cup.runtime.*;
+
+//init with {: scanner.init(); :};
+//scan with {: return scanner.next_token(); :};
+
+terminal IF, ELSEIF, ELSE, WHILE, FOR, DO, SWITCH, CASE, BREAK, DEFAULT, PRINT;
+terminal PLUS, MINUS, ASTERISK, DIVISION, MODULO, UNARY_MINUS;
+terminal LESS, LESS_EQUAL, GREATER_EQUAL, GREATER, EQUAL, EQUAL_EQUAL, NOT_EQUAL, EXCLAM, AND, AND_AND, OR, OR_OR, TRUE, FALSE;
+terminal LPAREN, RPAREN, LBRACE, RBRACE, COMMA, COLON, SEMI;
+terminal Character CHAR;
+terminal String IDENT;
+terminal Integer INTEGER;
+
+non terminal ASTNode program, sentence_list, sentence, simple_sentence, composed_sentence, expression, condition;
+//non terminal Integer expr;
+//non terminal Boolean condition;
+
+precedence left OR_OR;
+precedence left AND_AND;
+precedence left EQUAL_EQUAL, NOT_EQUAL;
+precedence left LESS, LESS_EQUAL, GREATER, GREATER_EQUAL;
+precedence left PLUS, MINUS;
+precedence left ASTERISK, DIVISION, MODULO;
+precedence nonassoc UNARY_MINUS;
+precedence right NOT;
+precedence right PLUS_PLUS, MINUS_MINUS;
+
+start with program;
+
+program ::=
+      composed_sentence:cs              {: RESULT = cs; :}
+    ;
+
+composed_sentence ::=
+      LBRACE sentence_list:sl RBRACE    {: RESULT = sl; :}
+    ;
+
+sentence_list ::=
+      sentence_list:sl sentence:s       {: sl.add(s); RESULT = sl; :}
+    |                                   {: RESULT = new ArrayList<Sentence>(); :}
+    ;
+
+sentence ::=
+      simple_sentence:ss                {: RESULT = ss; :}
+    | composed_sentence:cs              {: RESULT = cs; :}
+    ;
+
+simple_sentence ::=
+      variable_declaration_list:vdl SEMI    {: RESULT = vdl; :}
+    | type_declaration:td SEMI              {: RESULT = td; :}
+    | expression:e SEMI                     {: RESULT = e; :}
+    | if_sentence:s                         {: RESULT = s; :}
+    | while_sentence:s                      {: RESULT = s; :}
+    | do_while_sentence:s                   {: RESULT = s; :}
+    | for_sentence:s                        {: RESULT = s; :}
+    | switch_sentence:s                     {: RESULT = s; :}
+    | print_sentence:s SEMI                 {: RESULT = s; :}
+    | SEMI                                  {: RESULT = new EmptyStatement(); :}
+    ;
+
+variable_declaration_list ::=
+      type:t IDENT:id
+      {:
+        List<VariableDeclaration> declarationList = new ArrayList<>();
+        declarationList.add(new VariableDeclaration(t, id, null));
+        RESULT = declarationList;
+      :}
+    | type:t IDENT:id EQUAL expression:e
+      {:
+        List<VariableDeclaration> declarationList = new ArrayList<>();
+        declarationList.add(new VariableDeclaration(t, id, e));
+        RESULT = declarationList;
+      :}
+    | variable_declaration_list:vdl COMMA IDENT:id
+      {:
+        Type type = vdl.get(0).getType();
+        vdl.add(new VariableDeclaration(type, id, null));
+        RESULT = vdl;
+      :}
+    | variable_declaration_list:vdl COMMA IDENT:id EQUAL expression:e
+      {:
+        Type type = vdl.get(0).getType();
+        vdl.add(new VariableDeclaration(type, id, e));
+        RESULT = vdl;
+      :}
+    ;
+
+type_declaration ::= typedef type IDENT;
+
+type ::=
+      INT                   {: RESULT = new IntType(); :}
+    | CHAR                  {: RESULT = new CharType(); :}
+    | IDENT:type            {: RESULT = new UserType(type); :}
+    ;
+
+if_sentence ::=
+      IF LPAREN condition:c RPAREN sentence:s else_if_list:eil else:e   {: RESULT = new IfStatement(c, s, eil, e); :}
+    ;
+
+else_if_list ::=
+      else_if_list:eil ELSEIF LPAREN condition:c RPAREN sentence:s      {: eil.add(new ElseIf(c, s)); RESULT = eil; :}
+    |                                                                   {: RESULT = new ArrayList<ElseIf>(); :}
+    ;
+
+else ::=
+      ELSE sentence:s       {: RESULT = s; :}
+    |                       {: RESULT = null; :}
+    ;
+
+while_sentence ::=
+      WHILE LPAREN condition:c RPAREN sentence:s            {: RESULT = new WhileStatement(c, s); :}
+    ;
+
+do_while_sentence ::=
+      DO sentence:s WHILE LPAREN condition:c RPAREN SEMI    {: RESULT = new DoWhileStatement(s, c); :}
+    ;
+
+for_sentence ::=
+      FOR LPAREN expression:ini SEMI condition:c SEMI expression:up RPAREN sentence:s  {: RESULT = new ForStatement(ini, c, up, s); :}
+    ;
+
+switch_sentence ::=
+      SWITCH LPAREN expression:e RPAREN LBRACE case_list:cl default_opt:d RBRACE    {: RESULT = new SwitchStatement(e, cl, d); :}
+    ;
+
+case_list ::=
+      case_list:cl CASE INTEGER:v COLON sentence:s BREAK SEMI   {: cl.add(new SwitchCase(v, s)); RESULT = cl; :}
+    |                                                           {: RESULT = new ArrayList<SwitchCase>(); :}
+    ;
+
+default_opt ::=
+      DEFAULT COLON sentence:s BREAK SEMI       {: RESULT = s; :}
+    |                                           {: RESULT = null; :}
+    ;
+
+print_sentence ::=
+      PRINT expression:e    {: RESULT = new PrintStatement(e); :}
+    ;
+
+binary_op ::=
+      PLUS                  {: RESULT = "+"; :}
+    | MINUS                 {: RESULT = "-"; :}
+    | ASTERISK              {: RESULT = "*"; :}
+    | DIVISION              {: RESULT = "/"; :}
+    | MODULO                {: RESULT = "%"; :}
+    ;
+
+expression ::=
+      expression:e1 binary_op:op expression:e2                      {: RESULT = new BinaryExpr(op, e1, e2); :}
+    | MINUS expression:e                                            {: RESULT = new UnaryExpr("-", e); :}  %prec UNARY_MINUS
+    | LPAREN expression:e RPAREN                                    {: RESULT = e; :}
+    | condition:c INTERROGATION expression:e1 COLON expression:e2   {: RESULT = new TernaryExpr(c, e1, e2); :}
+    | variable:id EQUAL expression:e                                {: RESULT = new Assignment(id, e); :}
+    | INTEGER:i                                                     {: RESULT = new IntegerLiteral(i); :}
+    | CHARACTER:c                                                   {: RESULT = new CharacterLiteral(c); :}
+    | variable:id                                                   {: RESULT = id; :}
+    | PLUS_PLUS variable:id                                         {: RESULT = new PreIncrement(id); :}
+    | variable:id PLUS_PLUS                                         {: RESULT = new PostIncrement(id); :}
+    | MINUS_MINUS variable:id                                       {: RESULT = new PreDecrement(id); :}
+    | variable:id MINUS_MINUS                                       {: RESULT = new PostDecrement(id); :}
+    ;
+
+variable ::=
+      IDENT:id               {: RESULT = new Identifier(id); :}
+    ;
+
+relational_op ::=
+      LESS                  {: RESULT = "<"; :}
+    | LESS_EQUAL            {: RESULT = "<="; :}
+    | GREATER_EQUAL         {: RESULT = ">="; :}
+    | GREATER               {: RESULT = ">"; :}
+    | EQUAL_EQUAL           {: RESULT = "=="; :}
+    | NOT_EQUAL             {: RESULT = "!="; :}
+    ;
+
+condition ::=
+      expression:e1 relational_op:op expression:e2  {: RESULT = new Comparison(op, e1, e2); :}
+    | condition:c1 AND_AND condition:c2             {: RESULT = new LogicalExpr("&&", c1, c2); :}
+    | condition:c1 OR_OR condition:c2               {: RESULT = new LogicalExpr("||", c1, c2); :}
+    | EXCLAM condition:c                            {: RESULT = new NotExpr(c); :}
+    | LPAREN condition:c RPAREN                     {: RESULT = c; :}
+    | TRUE                                          {: RESULT = new BooleanLiteral(true); :}
+    | FALSE                                         {: RESULT = new BooleanLiteral(false); :}
+    ;
+
+
+
+//if_sentence ::=
+//      IF LPAREN condition:c RPAREN sentence:s else_if:elseif    {: RESULT = new IfStatement(c, s, elseif); :}
+//    ;
+
+//else_if ::=
+//      ELSEIF LPAREN condition RPAREN sentence else_if
+//    | ELSE sentence
+//    |
+//    ;
+
+//switch_sentence ::=
+//      SWITCH LPAREN expression:e RPAREN LBRACE switch_list:sl opt_default:default RBRACE
+//    ;
+
+//switch_list ::=
+//      CASE INTEGER COLON sentence:s BREAK SEMI
+//    | switch_list:sl CASE INTEGER COLON sentence:s BREAK SEMI
+//    ;
+
+//opt_default ::=
+//      DEFAULT COLON sentence:s BREAK SEMI
+//    |
+//    ;
+
+
+//sentence ::=
+//      expr:e SEMI                                                       {: RESULT = new ExpressionStatement(e); :}
+//    | LBRACE sentence_list:sl RBRACE                                    {: RESULT = new BlockStatement(sl); :}
+//    | PRINT LPAREN expr:e RPAREN SEMI                                   {: RESULT = new PrintStatement(e); :}
+//    | IF LPAREN condition:c RPAREN sentence:s1 ELSE sentence:s2         {: RESULT = new IfStatement(c, s1, s2); :}
+//    | IF LPAREN condition:c RPAREN sentence:s                           {: RESULT = new IfStatement(c, s, null); :}
+//    | WHILE LPAREN condition:c RPAREN sentence:s                        {: RESULT = new WhileStatement(c, s); :}
+//    | DO sentence:s WHILE LPAREN condition:c RPAREN SEMI                {: RESULT = new DoWhileStatement(s, c); :}
+//    | FOR LPAREN expr:i SEMI condition:c SEMI expr:u RPAREN sentence:s  {: RESULT = new ForStatement(i, c, u, s); :}
+//    ;
+
+//expr ::=
+//      expr:e1 PLUS expr:e2          {: RESULT = new BinaryExpr("+", e1, e2); :}
+//    | expr:e1 MINUS expr:e2         {: RESULT = new BinaryExpr("-", e1, e2); :}
+//    | expr:e1 ASTERISK expr:e2      {: RESULT = new BinaryExpr("*", e1, e2); :}
+//    | expr:e1 DIV expr:e2           {: RESULT = new BinaryExpr("/", e1, e2); :}
+//    | MINUS expr:e                  {: RESULT = new UnaryExpr("-", e); :}  %prec UNARY_MINUS
+//    | LPAREN expr:e RPAREN          {: RESULT = e; :}
+//    | IDEN:id EQUAL expr:e          {: RESULT = new Assignment(id, e); :}
+//    | IDEN:id                       {: RESULT = new Identifier(id); :}
+//    | INTEGER:n                     {: RESULT = new IntegerLiteral(n); :}
+//    ;
+
+//condition ::=
+//      expr:e1 EQUAL EQUAL expr:e2       {: RESULT = new Comparison("==", e1, e2); :}
+//    | expr:e1 EXCLAM EQUAL expr:e2      {: RESULT = new Comparison("!=", e1, e2); :}
+//    | expr:e1 LESS expr:e2              {: RESULT = new Comparison("<", e1, e2); :}
+//    | expr:e1 LESS EQUAL expr:e2        {: RESULT = new Comparison("<=", e1, e2); :}
+//    | expr:e1 GREATER expr:e2           {: RESULT = new Comparison(">", e1, e2); :}
+//    | expr:e1 GREATER EQUAL expr:e2     {: RESULT = new Comparison(">=", e1, e2); :}
+//    | EXCLAM condition:c                {: RESULT = new NotExpr(c); :}
+//    | condition:c1 AND AND condition:c2 {: RESULT = new LogicalExpr("&&", c1, c2); :}
+//    | condition:c1 OR OR condition:c2   {: RESULT = new LogicalExpr("||", c1, c2); :}
+//    | LPAREN condition:c RPAREN         {: RESULT = c; :}
+//    ;
