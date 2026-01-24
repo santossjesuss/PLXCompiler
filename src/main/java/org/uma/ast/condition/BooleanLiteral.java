@@ -9,7 +9,7 @@ public class BooleanLiteral implements Condition {
         this.value = value;
     }
 
-    public boolean isValue() {
+    public boolean getValue() {
         return value;
     }
 

@@ -3,16 +3,39 @@ import java_cup.runtime.*;
 //init with {: scanner.init(); :};
 //scan with {: return scanner.next_token(); :};
 
-terminal IF, ELSEIF, ELSE, WHILE, FOR, DO, SWITCH, CASE, BREAK, DEFAULT, PRINT;
-terminal PLUS, MINUS, ASTERISK, DIVISION, MODULO, UNARY_MINUS;
-terminal LESS, LESS_EQUAL, GREATER_EQUAL, GREATER, EQUAL, EQUAL_EQUAL, NOT_EQUAL, EXCLAM, AND, AND_AND, OR, OR_OR, TRUE, FALSE;
-terminal LPAREN, RPAREN, LBRACE, RBRACE, COMMA, COLON, SEMI;
-terminal Character CHAR;
-terminal String IDENT;
-terminal Integer INTEGER;
+parser code {: :}
 
-non terminal ASTNode program, sentence_list, sentence, simple_sentence, composed_sentence, expression, condition;
-//non terminal Integer expr;
+terminal IF, ELSEIF, ELSE, WHILE, FOR, DO, SWITCH, CASE, BREAK, DEFAULT, PRINT;
+terminal PLUS, MINUS, ASTERISK, DIVISION, MODULO, UNARY_MINUS, PLUS_PLUS, MINUS_MINUS;
+terminal LESS, LESS_EQUAL, GREATER_EQUAL, GREATER, EQUAL, EQUAL_EQUAL, NOT_EQUAL, AND, AND_AND, OR, OR_OR, TRUE, FALSE;
+terminal EXCLAM, INTERROG;
+terminal LPAREN, RPAREN, LBRACE, RBRACE, COMMA, COLON, SEMI;
+terminal INT_TYPE, FLOAT_TYPE, CHAR_TYPE, STRING_TYPE;
+terminal Integer INTEGER;
+terminal Float FLOAT;
+terminal Character CHARACTER;
+terminal String STRING;
+terminal String IDENT;
+
+non terminal ASTNode program, sentence_list, sentence, simple_sentence, composed_sentence;
+//non terminal ASTNode variable, variable_declaration_list, type_declaration, type;
+non terminal ASTNode variable, variable_declaration_list, type;
+//non terminal IfStatement if_sentence;
+non terminal List<ElseIf> else_if_list;
+non terminal else;
+non terminal WhileStatement while_sentence;
+non terminal DoWhileStatement do_while_sentence;
+non terminal ForStatement for_sentence;
+non terminal for_init, for_update;
+non terminal SwitchStatement switch_sentence;
+non terminal List<SwitchCase> case_list;
+non terminal default_opt;
+non terminal PrintStatement print_sentence;
+non terminal Expression expression;
+non terminal String binary_op;
+non terminal Condition condition;
+non terminal String relational_op;
+//non terminal Integer expression;
 //non terminal Boolean condition;
 
 precedence left OR_OR;
@@ -21,9 +44,11 @@ precedence left EQUAL_EQUAL, NOT_EQUAL;
 precedence left LESS, LESS_EQUAL, GREATER, GREATER_EQUAL;
 precedence left PLUS, MINUS;
 precedence left ASTERISK, DIVISION, MODULO;
+precedence left ELSE;
 precedence nonassoc UNARY_MINUS;
-precedence right NOT;
+precedence right EXCLAM;
 precedence right PLUS_PLUS, MINUS_MINUS;
+precedence right EQUAL;
 
 start with program;
 
@@ -47,7 +72,7 @@ sentence ::=
 
 simple_sentence ::=
       variable_declaration_list:vdl SEMI    {: RESULT = new VariableDeclarationStatement(vdl); :}
-    | type_declaration:td SEMI              {: RESULT = td; :}
+    //| type_declaration:td SEMI              {: RESULT = td; :}
     | expression:e SEMI                     {: RESULT = new ExpressionStatement(e); :}
     | if_sentence:s                         {: RESULT = s; :}
     | while_sentence:s                      {: RESULT = s; :}
@@ -58,26 +83,30 @@ simple_sentence ::=
     | SEMI                                  {: RESULT = new EmptyStatement(); :}
     ;
 
+variable ::=
+      IDENT:id                              {: RESULT = new Identifier(id); :}
+    ;
+
 variable_declaration_list ::=
-      type:t IDENT:id
+      type:t variable:id
       {:
         List<VariableDeclaration> declarationList = new ArrayList<>();
         declarationList.add(new VariableDeclaration(t, id, null));
         RESULT = declarationList;
       :}
-    | type:t IDENT:id EQUAL expression:e
+    | type:t variable:id EQUAL expression:e
       {:
         List<VariableDeclaration> declarationList = new ArrayList<>();
         declarationList.add(new VariableDeclaration(t, id, e));
         RESULT = declarationList;
       :}
-    | variable_declaration_list:vdl COMMA IDENT:id
+    | variable_declaration_list:vdl COMMA variable:id
       {:
         Type type = vdl.get(0).getType();
         vdl.add(new VariableDeclaration(type, id, null));
         RESULT = vdl;
       :}
-    | variable_declaration_list:vdl COMMA IDENT:id EQUAL expression:e
+    | variable_declaration_list:vdl COMMA variable:id EQUAL expression:e
       {:
         Type type = vdl.get(0).getType();
         vdl.add(new VariableDeclaration(type, id, e));
@@ -85,31 +114,36 @@ variable_declaration_list ::=
       :}
     ;
 
-type_declaration ::=
-      TYPEDEF type:t IDENT:id               {:  :}
-    ;
+//type_declaration ::=
+//      TYPEDEF type:t IDENT:id               {:  :}
+//    ;
 
 type ::=
-      INT                                   {: RESULT = new IntType(); :}
-    | FLOAT                                 {:  :}
-    | CHAR                                  {: RESULT = new CharType(); :}
-    | STRING                                {:  :}
-    | IDENT:type                            {: RESULT = new UserType(type); :}
+      INT_TYPE                              {: RESULT = new IntType(); :}
+    | FLOAT_TYPE                            {: RESULT = new FloatType(); :}
+    | CHAR_TYPE                             {: RESULT = new CharType(); :}
+    | STRING_TYPE                           {: RESULT = new StringType(); :}
+    | IDENT:t                               {: RESULT = new UserType(t); :}
     ;
 
 if_sentence ::=
-      IF LPAREN condition:c RPAREN sentence:s else_if_list:eil else:e   {: RESULT = new IfStatement(c, s, eil, e); :}
+      IF LPAREN condition:c RPAREN sentence:s                       {: new IfStatement(c, s, null); :}
+    | IF LPAREN condition:c RPAREN sentence:s1 ELSE sentence:s2     {: new IfStatement(c, s1, s2); :}
     ;
 
-else_if_list ::=
-      else_if_list:eil ELSEIF LPAREN condition:c RPAREN sentence:s      {: eil.add(new ElseIf(c, s)); RESULT = eil; :}
-    |                                                                   {: RESULT = new ArrayList<ElseIf>(); :}
-    ;
+//if_sentence ::=
+//      IF LPAREN condition:c RPAREN sentence:s else_if_list:eil else:e   {: RESULT = new IfStatement(c, s, eil, e); :}
+//    ;
 
-else ::=
-      ELSE sentence:s                       {: RESULT = s; :}
-    |                                       {: RESULT = null; :}
-    ;
+//else_if_list ::=
+//      else_if_list:eil ELSEIF LPAREN condition:c RPAREN sentence:s      {: eil.add(new ElseIf(c, s)); RESULT = eil; :}
+//    |                                                                   {: RESULT = new ArrayList<ElseIf>(); :}
+//    ;
+
+//else ::=
+//      ELSE sentence:s                       {: RESULT = new Else(s); :}
+//    |                                       {: RESULT = null; :}
+//    ;
 
 while_sentence ::=
       WHILE LPAREN condition:c RPAREN sentence:s            {: RESULT = new WhileStatement(c, s); :}
@@ -124,9 +158,9 @@ for_sentence ::=
     ;
 
 for_init ::=
-      expression:e                          {: RESULT = e; :}
-    | variable_declaration_list:vdl         {: RESULT = vdl; :}
-    |                                       {: RESULT = null; :}
+      expression:e                          {: RESULT = new ForInitExpr(e); :}
+    | variable_declaration_list:vdl         {: RESULT = new ForInitDecl(vdl); :}
+    |                                       {: RESULT = new ForInitEmpty(); :}
     ;
 
 for_update ::=
@@ -164,19 +198,16 @@ expression ::=
       expression:e1 binary_op:op expression:e2                      {: RESULT = new BinaryExpr(op, e1, e2); :}
     | MINUS expression:e                                            {: RESULT = new UnaryExpr("-", e); :}  %prec UNARY_MINUS
     | LPAREN expression:e RPAREN                                    {: RESULT = e; :}
-    | condition:c INTERROGATION expression:e1 COLON expression:e2   {: RESULT = new TernaryExpr(c, e1, e2); :}
+    | condition:c INTERROG expression:e1 COLON expression:e2        {: RESULT = new TernaryExpr(c, e1, e2); :}
     | variable:id EQUAL expression:e                                {: RESULT = new Assignment(id, e); :}
     | INTEGER:i                                                     {: RESULT = new IntegerLiteral(i); :}
+    | FLOAT:f                                                       {: RESULT = new FloatLiteral(f); :}
     | CHARACTER:c                                                   {: RESULT = new CharacterLiteral(c); :}
     | variable:id                                                   {: RESULT = id; :}
     | PLUS_PLUS variable:id                                         {: RESULT = new PreIncrement(id); :}
     | variable:id PLUS_PLUS                                         {: RESULT = new PostIncrement(id); :}
     | MINUS_MINUS variable:id                                       {: RESULT = new PreDecrement(id); :}
     | variable:id MINUS_MINUS                                       {: RESULT = new PostDecrement(id); :}
-    ;
-
-variable ::=
-      IDENT:id                              {: RESULT = new Identifier(id); :}
     ;
 
 relational_op ::=

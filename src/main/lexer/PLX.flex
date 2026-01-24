@@ -24,7 +24,6 @@ MODULO = "%"
 EQUAL = "="
 EQUAL_EQUAL = "=="
 NOT_EQUAL = "!="
-EXCLAMATION = "!"
 LESS = "<"
 LESS_EQUAL = "<="
 GREATER_EQUAL = ">="
@@ -36,8 +35,10 @@ OR_OR = "||"
 TRUE = "true"
 FALSE = "false"
 
+EXCLAMATION = "!"
+INTERROGATION = "?"
+
 IF = "if"
-ELSEIF = "elseif"
 ELSE = "else"
 WHILE = "while"
 FOR = "for"
@@ -55,10 +56,14 @@ COLON = ":"
 SEMI = ";"
 
 INT_TYPE = "int"
+FLOAT_TYPE = "float"
 CHAR_TYPE = "char"
 
+EXPONENT = [eE][\+\-]?{NATURAL}+
+
 NATURAL = 0 | [1-9][0-9]*
-CHARACTER = [a-zA-Z]
+FLOAT = {NATURAL}"."{NATURAL}({EXPONENT})?
+CHARACTER = "'"[a-zA-Z]"'"
 IDENTIFIER = [a-zA-Z_][a-zA-Z0–9_]*
 
 WS = [ \t]+
@@ -77,7 +82,6 @@ EOL = (\r\n | \r | \n)+
 {EQUAL}          { return new Symbol(sym.EQUAL); }
 {EQUAL_EQUAL}    { return new Symbol(sym.EQUAL_EQUAL); }
 {NOT_EQUAL}      { return new Symbol(sym.NOT_EQUAL); }
-{EXCLAMATION}    { return new Symbol(sym.EXCLAM); }
 {LESS}           { return new Symbol(sym.LESS); }
 {LESS_EQUAL}     { return new Symbol(sym.LESS_EQUAL); }
 {GREATER_EQUAL}  { return new Symbol(sym.GREATER_EQUAL); }
@@ -89,8 +93,10 @@ EOL = (\r\n | \r | \n)+
 {TRUE}           { return new Symbol(sym.TRUE); }
 {FALSE}          { return new Symbol(sym.FALSE); }
 
+{EXCLAMATION}    { return new Symbol(sym.EXCLAM); }
+{INTERROGATION}  { return new Symbol(sym.INTERROG); }
+
 {IF}             { return new Symbol(sym.IF); }
-{ELSEIF}
 {ELSE}           { return new Symbol(sym.ELSE); }
 {WHILE}          { return new Symbol(sym.WHILE); }
 {FOR}            { return new Symbol(sym.FOR); }
@@ -108,10 +114,11 @@ EOL = (\r\n | \r | \n)+
 {SEMI}           { return new Symbol(sym.SEMI); }
 
 {INT_TYPE}       { return new Symbol(sym.INT_TYPE); }
+{FLOAT_TYPE}     { return new Symbol(sym.FLOAT_TYPE); }
 {CHAR_TYPE}      { return new Symbol(sym.CHAR_TYPE); }
 
 {NATURAL}        { return new Symbol(sym.INTEGER, Integer.parseInt(yytext())); }
-{CHARACTER}      { return new Symbol(sym.CHAR, yytext()); }
+{CHARACTER}      { return new Symbol(sym.CHARACTER, yytext()); }
 {IDENTIFIER}     { return new Symbol(sym.IDENT, yytext()); }
 
 {EOL}            {  }

@@ -1,13 +1,20 @@
 package org.uma.ast.statement;
 
-public class ForInitDecl extends ForInit {
-    VariableDeclaration variableDeclaration;
+import org.uma.ASTVisitor;
 
-    public ForInitDecl(VariableDeclaration variableDeclaration) {
-        this.variableDeclaration = variableDeclaration;
+public class ForInitDecl extends ForInit {
+    VariableDeclarationStatement variableDeclarationStatement;
+
+    public ForInitDecl(VariableDeclarationStatement variableDeclarationStatement) {
+        this.variableDeclarationStatement = variableDeclarationStatement;
     }
 
-    public VariableDeclaration getVariableDeclaration() {
-        return variableDeclaration;
+    public VariableDeclarationStatement getVariableDeclaration() {
+        return variableDeclarationStatement;
+    }
+
+    @Override
+    public <T> T accept(ASTVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 }

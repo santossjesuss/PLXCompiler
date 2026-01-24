@@ -1,4 +1,6 @@
 package org.uma.ast.statement;
 
-public abstract class ForInit {
+import org.uma.ast.ASTNode;
+
+public abstract class ForInit implements ASTNode {
 }

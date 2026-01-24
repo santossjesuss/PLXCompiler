@@ -1,5 +1,6 @@
 package org.uma.ast.statement;
 
+import org.uma.ASTVisitor;
 import org.uma.ast.expression.Expression;
 
 public class ForInitExpr extends ForInit {
@@ -11,5 +12,10 @@ public class ForInitExpr extends ForInit {
 
     public Expression getExpression() {
         return expression;
+    }
+
+    @Override
+    public <T> T accept(ASTVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 }

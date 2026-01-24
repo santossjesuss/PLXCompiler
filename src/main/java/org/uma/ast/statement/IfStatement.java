@@ -1,7 +1,6 @@
 package org.uma.ast.statement;
 
 import org.uma.ASTVisitor;
-import org.uma.ast.ASTNode;
 import org.uma.ast.condition.Condition;
 
 import java.util.List;
@@ -9,13 +8,11 @@ import java.util.List;
 public class IfStatement implements Statement {
     private Condition condition;
     private Statement thenBranch;
-    private List<ElseIf> elseIfList;
     private Statement elseBranch;
 
-    IfStatement(Condition condition, Statement thenBranch, List<ElseIf> elseIfList, Statement elseBranch) {
+    IfStatement(Condition condition, Statement thenBranch, Statement elseBranch) {
         this.condition = condition;
         this.thenBranch = thenBranch;
-        this.elseIfList = elseIfList;
         this.elseBranch = elseBranch;
     }
 
@@ -25,10 +22,6 @@ public class IfStatement implements Statement {
 
     public Statement getThenBranch() {
         return thenBranch;
-    }
-
-    public List<ElseIf> getElseIfList() {
-        return elseIfList;
     }
 
     public Statement getElseBranch() {

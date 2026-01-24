@@ -28,5 +28,9 @@ echo [4/4] Running ...
 echo ---------------------------------------
 :: java -cp "bin;%CUP_RUNTIME%" org.uma.Main
 :: java -cp "bin;%CUP_RUNTIME%" org.uma.Main testing\exp.in
-java -cp "bin;%CUP_RUNTIME%" org.uma.Main testing\exp.in testing\exp.out
+
+::java -cp "bin;%CUP_RUNTIME%" org.uma.Main testing\exp.in testing\exp.out
+::javac -d bin -cp "%CUP_RUNTIME%;gen" gen\lexer\*.java gen\parser\*.java %SRC_PATH%\**\*.java
+javac -d bin -cp "%CUP_RUNTIME%;gen" gen\lexer\*.java gen\parser\*.java %SRC_PATH%\*.java %SRC_PATH%\ast\*.java %SRC_PATH%\symboltable\*.java
+
 ::pause

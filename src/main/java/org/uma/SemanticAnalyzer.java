@@ -1,11 +1,17 @@
 package org.uma;
 
 import org.uma.ast.ASTNode;
+import org.uma.ast.Block;
+import org.uma.ast.Program;
+import org.uma.ast.condition.BooleanLiteral;
 import org.uma.ast.condition.Comparison;
 import org.uma.ast.condition.LogicalExpr;
 import org.uma.ast.condition.NotExpr;
 import org.uma.ast.expression.*;
 import org.uma.ast.statement.*;
+import org.uma.ast.statement.types.CharType;
+import org.uma.ast.statement.types.IntType;
+import org.uma.ast.statement.types.UserType;
 import org.uma.symboltable.SymbolInfo;
 import org.uma.symboltable.SymbolTable;
 
@@ -47,6 +53,11 @@ public class SemanticAnalyzer implements ASTVisitor<Void> {
     }
 
     @Override
+    public Void visit(TernaryExpr node) {
+        return null;
+    }
+
+    @Override
     public Void visit(Assignment node) {
         SymbolInfo info = symbolTable.lookup(node.getIdentifier());
         if (info == null) {
@@ -72,6 +83,31 @@ public class SemanticAnalyzer implements ASTVisitor<Void> {
     }
 
     @Override
+    public Void visit(CharacterLiteral node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(PreIncrement node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(PostIncrement node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(PreDecrement node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(PostDecrement node) {
+        return null;
+    }
+
+    @Override
     public Void visit(Comparison node) {
         node.getLeft().accept(this);
         node.getRight().accept(this);
@@ -92,10 +128,25 @@ public class SemanticAnalyzer implements ASTVisitor<Void> {
     }
 
     @Override
+    public Void visit(BooleanLiteral node) {
+        return null;
+    }
+
+    @Override
     public Void visit(StatementList node) {
         for (ASTNode statement : node.getStatements()) {
             statement.accept(this);
         }
+        return null;
+    }
+
+    @Override
+    public Void visit(Program node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(Block node) {
         return null;
     }
 
@@ -134,6 +185,11 @@ public class SemanticAnalyzer implements ASTVisitor<Void> {
     }
 
     @Override
+    public Void visit(SwitchStatement node) {
+        return null;
+    }
+
+    @Override
     public Void visit(ForStatement node) {
         symbolTable.enterScope();
 
@@ -161,6 +217,11 @@ public class SemanticAnalyzer implements ASTVisitor<Void> {
     }
 
     @Override
+    public Void visit(VariableDeclarationStatement node) {
+        return null;
+    }
+
+    @Override
     public Void visit(BlockStatement node) {
         symbolTable.enterScope();
         node.getStatements().accept(this);
@@ -171,6 +232,26 @@ public class SemanticAnalyzer implements ASTVisitor<Void> {
     @Override
     public Void visit(ExpressionStatement node) {
         node.getExpression().accept(this);
+        return null;
+    }
+
+    @Override
+    public Void visit(EmptyStatement node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(IntType node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(CharType node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(UserType node) {
         return null;
     }
 }

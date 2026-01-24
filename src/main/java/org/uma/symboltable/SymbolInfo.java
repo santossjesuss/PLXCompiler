@@ -10,4 +10,16 @@ public class SymbolInfo {
         this.type = type;
         this.scopeLevel = level;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getScopeLevel() {
+        return scopeLevel;
+    }
 }
